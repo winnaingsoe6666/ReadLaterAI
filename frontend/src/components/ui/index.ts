@@ -6,3 +6,4 @@ export { default as Modal } from './Modal';
 export { default as Spinner } from './Spinner';
 export { default as EmptyState } from './EmptyState';
 export { default as ContentCard } from './ContentCard';
+export { default as ToastItem } from './Toast';
