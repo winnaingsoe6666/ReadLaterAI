@@ -5,6 +5,7 @@ import com.knowvault.import_.dto.RawContent;
 import com.knowvault.tag.Tag;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,6 +32,7 @@ public class ContentNormalizer {
         content.setStatus("unread");
         content.setFavorite(false);
         content.setCategory(categorize(raw));
+        content.setImportDate(Instant.now().toString());
         return content;
     }
 

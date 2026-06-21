@@ -39,6 +39,9 @@ public class FacebookArchiveParser {
                 ZipEntry entry;
                 while ((entry = zis.getNextEntry()) != null) {
                     Path entryPath = tempDir.resolve(entry.getName());
+                    if (!entryPath.normalize().startsWith(tempDir.normalize())) {
+                        throw new ImportException("Zip entry path escapes target directory: " + entry.getName());
+                    }
                     if (entry.isDirectory()) {
                         Files.createDirectories(entryPath);
                     } else {
