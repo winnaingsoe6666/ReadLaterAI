@@ -54,11 +54,17 @@ interface UseContentDetailReturn {
 
 export function useContentDetail(id: number): UseContentDetailReturn {
   const [item, setItem] = useState<Content | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const mountedRef = useRef(true);
 
   const fetchData = useCallback(async () => {
+    if (Number.isNaN(id) || id <= 0) {
+      if (mountedRef.current) {
+        setError('Invalid content ID');
+      }
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -99,11 +105,10 @@ export function useContentSearch(query: string): UseContentSearchReturn {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const mountedRef = useRef(true);
+  mountedRef.current = true;
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    mountedRef.current = true;
-
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }
@@ -145,12 +150,13 @@ export function useContentSearch(query: string): UseContentSearchReturn {
 }
 
 interface UseContentActionsReturn {
-  updateStatus: (id: number, status: ContentStatus) => Promise<void>;
-  toggleFavorite: (id: number) => Promise<void>;
+  updateStatus: (id: number, status: ContentStatus, onOptimistic?: () => void) => Promise<void>;
+  toggleFavorite: (id: number, onOptimistic?: () => void) => Promise<void>;
 }
 
 export function useContentActions(): UseContentActionsReturn {
-  const updateStatus = useCallback(async (id: number, status: ContentStatus) => {
+  const updateStatus = useCallback(async (id: number, status: ContentStatus, onOptimistic?: () => void) => {
+    if (onOptimistic) onOptimistic();
     try {
       await contentService.updateStatus(id, status);
     } catch (err) {
@@ -158,7 +164,8 @@ export function useContentActions(): UseContentActionsReturn {
     }
   }, []);
 
-  const toggleFavorite = useCallback(async (id: number) => {
+  const toggleFavorite = useCallback(async (id: number, onOptimistic?: () => void) => {
+    if (onOptimistic) onOptimistic();
     try {
       await contentService.toggleFavorite(id);
     } catch (err) {
