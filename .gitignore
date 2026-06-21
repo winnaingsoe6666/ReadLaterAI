@@ -1,0 +1,18 @@
+# IDE
+.idea/
+.vscode/
+*.sw?
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project-level
+data.db
+*.db
+
+# Frontend build artifacts
+frontend/node_modules/
+frontend/dist/
+frontend/dist-electron/
+frontend/release/
