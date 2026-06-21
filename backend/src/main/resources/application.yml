@@ -22,3 +22,11 @@ knowvault:
   import:
     temp-dir: ./data/temp
     max-file-size: 524288000
+  ai:
+    provider: none            # none | gemini | ollama
+    gemini:
+      api-key: ""
+      model: gemini-2.0-flash
+    ollama:
+      base-url: http://localhost:11434
+      model: llama3

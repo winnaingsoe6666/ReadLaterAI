@@ -15,6 +15,7 @@ import Badge from '@/components/ui/Badge';
 import Spinner from '@/components/ui/Spinner';
 import EmptyState from '@/components/ui/EmptyState';
 import Button from '@/components/ui/Button';
+import SummarySection from '@/components/summary/SummarySection';
 
 const STATUS_OPTIONS: { label: string; value: ContentStatus }[] = [
   { label: 'Unread', value: 'unread' },
@@ -125,6 +126,9 @@ export default function ContentDetail() {
               dangerouslySetInnerHTML={{ __html: item.contentText }}
             />
           </Card>
+          <div className="mt-6">
+            <SummarySection contentId={numericId} />
+          </div>
         </div>
 
         {/* Right Column: Metadata */}
