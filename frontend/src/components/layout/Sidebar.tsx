@@ -6,6 +6,7 @@ import {
   Search,
   Star,
   Upload,
+  Settings,
   ChevronLeft,
   ChevronRight,
   BookOpen,
@@ -29,6 +30,7 @@ const navItems: NavItem[] = [
   { label: 'Search', path: '/search', icon: <Search className="w-5 h-5" /> },
   { label: 'Favorites', path: '/favorites', icon: <Star className="w-5 h-5" /> },
   { label: 'Import', path: '/import', icon: <Upload className="w-5 h-5" /> },
+  { label: 'Settings', path: '/settings', icon: <Settings className="w-5 h-5" /> },
 ];
 
 export default function Sidebar({ collapsed, onToggle }: SidebarProps) {
