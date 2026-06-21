@@ -5,8 +5,9 @@ import tailwindcss from '@tailwindcss/vite'
 import electron from 'vite-plugin-electron'
 import renderer from 'vite-plugin-electron-renderer'
 
-// Skip Electron in headless mode (no DISPLAY) to prevent crashes
-const isHeadless = !process.env.DISPLAY
+// Skip Electron in headless/WSL mode to prevent crashes
+// Set VITE_ELECTRON=true to enable Electron desktop build
+const isHeadless = !process.env.VITE_ELECTRON
 
 export default defineConfig({
   resolve: {
