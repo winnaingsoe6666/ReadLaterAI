@@ -35,8 +35,17 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:8080',
         changeOrigin: true,
-        timeout: 1800000, // 30 minutes for large imports
+        timeout: 1800000,
         proxyTimeout: 1800000,
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq, req) => {
+            // Preserve Content-Type header for multipart uploads
+            const ct = req.headers['content-type'];
+            if (ct) {
+              proxyReq.setHeader('Content-Type', ct);
+            }
+          });
+        },
       },
     },
   },

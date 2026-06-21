@@ -2,9 +2,8 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: '/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  // Don't set global Content-Type — axios auto-detects
+  // (JSON for objects, multipart/form-data for FormData)
 });
 
 api.interceptors.response.use(
