@@ -1,8 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import { ListFilter, ArrowUpDown } from 'lucide-react';
-import type { Content, ContentFilter, ContentStatus } from '@/types';
+import type { Content, ContentFilter } from '@/types';
 import { useContentList, useContentActions } from '@/hooks';
-import { contentService } from '@/services';
 import ContentCard from '@/components/ui/ContentCard';
 import EmptyState from '@/components/ui/EmptyState';
 import Spinner from '@/components/ui/Spinner';
