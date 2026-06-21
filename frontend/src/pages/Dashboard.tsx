@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { BookOpen, FileText, Heart, Tag, Upload, Search } from 'lucide-react';
 import { useContentList } from '@/hooks';
 import Card from '@/components/ui/Card';
@@ -9,13 +9,14 @@ import Spinner from '@/components/ui/Spinner';
 import Button from '@/components/ui/Button';
 
 function Dashboard() {
+  const navigate = useNavigate();
   const { content, loading, error } = useContentList();
 
   const stats = useMemo(() => {
     const total = content.length;
     const unread = content.filter((c) => c.status === 'unread').length;
     const favorites = content.filter((c) => c.favorite).length;
-    const categories = new Set(content.map((c) => c.category)).size;
+    const categories = new Set(content.map((c) => c.category).filter(Boolean)).size;
     return { total, unread, favorites, categories };
   }, [content]);
 
@@ -51,7 +52,7 @@ function Dashboard() {
           icon={<BookOpen className="h-12 w-12" />}
           title="No content yet"
           description="Import your saved articles and bookmarks to get started."
-          action={{ label: 'Import Content', onClick: () => {} }}
+          action={{ label: 'Import Content', onClick: () => navigate('/import') }}
         />
       </div>
     );
@@ -122,24 +123,18 @@ function Dashboard() {
           Quick Actions
         </h2>
         <div className="flex flex-wrap gap-3">
-          <Link to="/import">
-            <Button variant="primary" size="md">
-              <Upload className="mr-2 h-4 w-4" />
-              Import
-            </Button>
-          </Link>
-          <Link to="/search">
-            <Button variant="secondary" size="md">
-              <Search className="mr-2 h-4 w-4" />
-              Search
-            </Button>
-          </Link>
-          <Link to="/content">
-            <Button variant="secondary" size="md">
-              <BookOpen className="mr-2 h-4 w-4" />
-              Browse Content
-            </Button>
-          </Link>
+          <Button variant="primary" size="md" onClick={() => navigate('/import')}>
+            <Upload className="mr-2 h-4 w-4" />
+            Import
+          </Button>
+          <Button variant="secondary" size="md" onClick={() => navigate('/search')}>
+            <Search className="mr-2 h-4 w-4" />
+            Search
+          </Button>
+          <Button variant="secondary" size="md" onClick={() => navigate('/content')}>
+            <BookOpen className="mr-2 h-4 w-4" />
+            Browse Content
+          </Button>
         </div>
       </section>
 
