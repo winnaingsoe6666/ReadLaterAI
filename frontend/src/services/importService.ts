@@ -10,9 +10,7 @@ export async function uploadFacebookArchive(
   formData.append('deleteAfterImport', String(deleteAfterImport));
 
   const response = await api.post<ImportResult>('/import/facebook', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
+    timeout: 600000, // 10 minutes for large archives
   });
   return response.data;
 }

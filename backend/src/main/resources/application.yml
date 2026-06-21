@@ -14,18 +14,18 @@ spring:
     multipart:
       max-file-size: 500MB
       max-request-size: 500MB
-
 server:
   port: 8080
-
+  tomcat:
+    connection-timeout: 600000   # 10 minutes for large file uploads
 knowvault:
   import:
     temp-dir: ./data/temp
     max-file-size: 524288000
   ai:
-    provider: none            # none | gemini | ollama
+    provider: gemini
     gemini:
-      api-key: ""
+      api-key: AIzaSyTestKey12345
       model: gemini-2.0-flash
     ollama:
       base-url: http://localhost:11434
