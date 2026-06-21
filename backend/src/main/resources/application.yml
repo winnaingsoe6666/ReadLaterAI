@@ -12,16 +12,16 @@ spring:
     locations: classpath:db/migration
   servlet:
     multipart:
-      max-file-size: 500MB
-      max-request-size: 500MB
+      max-file-size: 1500MB
+      max-request-size: 1500MB
 server:
   port: 8080
   tomcat:
-    connection-timeout: 600000   # 10 minutes for large file uploads
+    connection-timeout: 1800000   # 30 minutes for large file uploads
 knowvault:
   import:
     temp-dir: ./data/temp
-    max-file-size: 524288000
+    max-file-size: 1610612736
   ai:
     provider: gemini
     gemini:
