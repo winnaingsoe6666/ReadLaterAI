@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import ErrorBoundary from './components/ErrorBoundary'
 import AppLayout from './components/layout/AppLayout'
 import Dashboard from './pages/Dashboard'
 import ContentList from './pages/ContentList'
@@ -10,8 +11,9 @@ import ImportPage from './pages/ImportPage'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Routes>
         <Route element={<AppLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="content" element={<ContentList />} />
@@ -22,8 +24,9 @@ function App() {
           <Route path="import" element={<ImportPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </ErrorBoundary>
   )
 }
 
