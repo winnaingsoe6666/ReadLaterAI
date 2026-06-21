@@ -105,10 +105,10 @@ export function useContentSearch(query: string): UseContentSearchReturn {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const mountedRef = useRef(true);
-  mountedRef.current = true;
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    mountedRef.current = true;
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }

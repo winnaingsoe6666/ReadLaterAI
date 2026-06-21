@@ -10,6 +10,8 @@
     --primary: #2563eb;
     --primary-foreground: #ffffff;
     --destructive: #ef4444;
+    --card: var(--background);
+    --ring: var(--primary);
     --color-surface: var(--background);
   }
 
@@ -23,6 +25,8 @@
       --primary: #3b82f6;
       --primary-foreground: #ffffff;
       --destructive: #f87171;
+      --card: var(--background);
+      --ring: var(--primary);
       --color-surface: var(--background);
     }
   }
