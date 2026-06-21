@@ -1,26 +1,21 @@
 package com.knowvault.common.config;
 
-import org.springframework.context.annotation.Bean;
+import jakarta.annotation.PostConstruct;
 import org.springframework.context.annotation.Configuration;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import javax.sql.DataSource;
+import org.springframework.core.env.Environment;
 
 @Configuration
 public class SQLiteConfig {
 
-    @Bean
-    public DataSource dataSource(DataSource original) {
-        return new org.springframework.jdbc.datasource.DelegatingDataSource(original) {
-            @Override
-            public Connection getConnection() throws SQLException {
-                Connection conn = super.getConnection();
-                try (Statement stmt = conn.createStatement()) {
-                    stmt.execute("PRAGMA foreign_keys = ON");
-                }
-                return conn;
-            }
-        };
+    private final Environment env;
+
+    public SQLiteConfig(Environment env) {
+        this.env = env;
+    }
+
+    @PostConstruct
+    public void logConfig() {
+        String url = env.getProperty("spring.datasource.url", "not set");
+        System.out.println("SQLite datasource URL: " + url);
     }
 }

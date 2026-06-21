@@ -5,7 +5,7 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 
 echo "Building backend..."
 cd "$PROJECT_ROOT/backend"
-mvn clean package -DskipTests -q
+./mvnw clean package -DskipTests -q
 
 echo "Copying JAR to frontend/resources..."
 mkdir -p "$PROJECT_ROOT/frontend/resources"
