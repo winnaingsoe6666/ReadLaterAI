@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:sqlite:./data/knowvault.db
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+
+server:
+  port: 8080
+
+knowvault:
+  import:
+    temp-dir: ./data/temp
+    max-file-size: 524288000
