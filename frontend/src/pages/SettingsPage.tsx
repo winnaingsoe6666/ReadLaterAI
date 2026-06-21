@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Settings, Save, RefreshCw, Eye, EyeOff } from 'lucide-react';
 import type { AISettings } from '@/services/settingsService';
 import { getAISettings, updateAISettings } from '@/services/settingsService';
@@ -14,22 +14,33 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [showApiKey, setShowApiKey] = useState(false);
   const [restartRequired, setRestartRequired] = useState(false);
+  const mountedRef = useRef(true);
+
+  const loadSettings = useCallback(async () => {
+    setLoading(true);
+    try {
+      const data = await getAISettings();
+      if (mountedRef.current) {
+        setSettings(data);
+      }
+    } catch (err) {
+      if (mountedRef.current) {
+        addToast('Failed to load settings', 'error');
+      }
+    } finally {
+      if (mountedRef.current) {
+        setLoading(false);
+      }
+    }
+  }, [addToast]);
 
   useEffect(() => {
+    mountedRef.current = true;
     loadSettings();
-  }, []);
-
-  const loadSettings = async () => {
-    try {
-      setLoading(true);
-      const data = await getAISettings();
-      setSettings(data);
-    } catch (err) {
-      addToast('Failed to load settings', 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
+    return () => {
+      mountedRef.current = false;
+    };
+  }, [loadSettings]);
 
   const handleSave = async () => {
     if (!settings) return;
