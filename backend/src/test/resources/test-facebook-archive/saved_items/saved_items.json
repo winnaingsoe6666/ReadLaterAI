@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Saved Article About Java",
+    "content": "This is a saved article about Java programming best practices.",
+    "timestamp": "2024-02-20T14:00:00",
+    "url": "https://example.com/java-article"
+  },
+  {
+    "title": "Saved Recipe",
+    "content": "A delicious recipe for chocolate cake.",
+    "timestamp": "2024-03-10T09:00:00",
+    "url": "https://example.com/recipe"
+  }
+]
