@@ -4,11 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SettingsService {
@@ -44,22 +47,58 @@ public class SettingsService {
     }
 
     /**
-     * Update AI settings in application.yml.
+     * Update AI settings in application.yml using proper YAML parsing.
      * Note: Requires app restart to take effect.
      */
+    @SuppressWarnings("unchecked")
     public AISettingsDTO updateSettings(AISettingsDTO settings) {
         try {
             Path configPath = findApplicationYml();
-            String content = Files.readString(configPath);
+            Yaml yaml = new Yaml();
+            Map<String, Object> root = yaml.load(Files.readString(configPath));
 
-            content = updateYamlValue(content, "knowvault.ai.provider", settings.getProvider());
-            content = updateYamlValue(content, "knowvault.ai.gemini.api-key", settings.getGeminiApiKey());
-            content = updateYamlValue(content, "knowvault.ai.gemini.model", settings.getGeminiModel());
-            content = updateYamlValue(content, "knowvault.ai.ollama.base-url", settings.getOllamaBaseUrl());
-            content = updateYamlValue(content, "knowvault.ai.ollama.model", settings.getOllamaModel());
+            // Navigate to knowvault → ai section
+            Map<String, Object> knowvault = (Map<String, Object>) root.get("knowvault");
+            if (knowvault == null) {
+                throw new RuntimeException("'knowvault' section not found in application.yml");
+            }
 
-            Files.writeString(configPath, content);
-            log.info("AI settings updated. Restart required for changes to take effect.");
+            Map<String, Object> ai = (Map<String, Object>) knowvault.get("ai");
+            if (ai == null) {
+                ai = new java.util.LinkedHashMap<>();
+                knowvault.put("ai", ai);
+            }
+
+            // Update values with proper YAML structure
+            ai.put("provider", settings.getProvider());
+
+            // Gemini sub-section
+            Map<String, Object> gemini = (Map<String, Object>) ai.get("gemini");
+            if (gemini == null) {
+                gemini = new java.util.LinkedHashMap<>();
+                ai.put("gemini", gemini);
+            }
+            gemini.put("api-key", settings.getGeminiApiKey());
+            gemini.put("model", settings.getGeminiModel());
+
+            // Ollama sub-section
+            Map<String, Object> ollama = (Map<String, Object>) ai.get("ollama");
+            if (ollama == null) {
+                ollama = new java.util.LinkedHashMap<>();
+                ai.put("ollama", ollama);
+            }
+            ollama.put("base-url", settings.getOllamaBaseUrl());
+            ollama.put("model", settings.getOllamaModel());
+
+            // Write back with comments preserved via manual formatting
+            // SnakeYAML dump doesn't preserve comments, so we format nicely
+            DumperOptions options = new DumperOptions();
+            options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+            options.setPrettyFlow(true);
+            Yaml dumper = new Yaml(options);
+            Files.writeString(configPath, dumper.dump(root));
+
+            log.info("AI settings written to {}. Restart required for changes to take effect.", configPath);
 
             // Update in-memory values
             this.provider = settings.getProvider();
@@ -78,7 +117,6 @@ public class SettingsService {
      * Find application.yml location.
      */
     private Path findApplicationYml() {
-        // Try multiple locations
         List<String> paths = List.of(
                 "src/main/resources/application.yml",
                 "backend/src/main/resources/application.yml",
@@ -93,35 +131,6 @@ public class SettingsService {
         }
 
         throw new RuntimeException("Could not find application.yml");
-    }
-
-    /**
-     * Update a YAML value (simple key-value replacement).
-     */
-    private String updateYamlValue(String content, String key, String value) {
-        String prefix = key + ":";
-        String[] lines = content.split("\n");
-        StringBuilder result = new StringBuilder();
-        boolean found = false;
-
-        for (String line : lines) {
-            String trimmed = line.trim();
-            if (trimmed.startsWith(prefix) && !found) {
-                // Preserve indentation
-                String indent = line.substring(0, line.indexOf(trimmed));
-                result.append(indent).append(key).append(": ").append(value);
-                found = true;
-            } else {
-                result.append(line);
-            }
-            result.append("\n");
-        }
-
-        if (!found) {
-            log.warn("Key '{}' not found in YAML, skipping update", key);
-        }
-
-        return result.toString();
     }
 
     /**
