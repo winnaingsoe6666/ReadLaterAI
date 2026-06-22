@@ -606,33 +606,33 @@ spring:
 
 ### Files to create
 
-- [ ] `frontend/package.json`
-- [ ] `frontend/vite.config.ts`
-- [ ] `frontend/tsconfig.json`
-- [ ] `frontend/tsconfig.node.json`
-- [ ] `frontend/index.html`
-- [ ] `frontend/tailwind.config.ts`
-- [ ] `frontend/electron/main.ts`
-- [ ] `frontend/electron/preload.ts`
-- [ ] `frontend/electron/ipc-handlers.ts`
-- [ ] `frontend/src/main.tsx`
-- [ ] `frontend/src/App.tsx`
-- [ ] `frontend/src/index.css`
-- [ ] `frontend/src/vite-env.d.ts`
-- [ ] `frontend/resources/icon.png`
-- [ ] `scripts/build-backend.sh`
-- [ ] `scripts/bundle-jre.sh`
-- [ ] `scripts/build-all.sh`
+- [x] `frontend/package.json`
+- [x] `frontend/vite.config.ts`
+- [x] `frontend/tsconfig.json`
+- [x] `frontend/tsconfig.node.json`
+- [x] `frontend/index.html`
+- [x] `frontend/tailwind.config.ts`
+- [x] `frontend/electron/main.ts`
+- [x] `frontend/electron/preload.ts`
+- [x] `frontend/electron/ipc-handlers.ts`
+- [x] `frontend/src/main.tsx`
+- [x] `frontend/src/App.tsx`
+- [x] `frontend/src/index.css`
+- [x] `frontend/src/vite-env.d.ts`
+- [x] `frontend/resources/icon.png`
+- [x] `scripts/build-backend.sh`
+- [x] `scripts/bundle-jre.sh`
+- [x] `scripts/build-all.sh`
 
 ### Files to modify
 
-- [ ] `backend/src/main/resources/application.yml` — add production profile support
-- [ ] `backend/src/main/resources/application-production.yml` — production config
-- [ ] `.gitignore` — add `frontend/node_modules/`, `frontend/dist/`, `frontend/release/`
+- [x] `backend/src/main/resources/application.yml` — add production profile support
+- [x] `backend/src/main/resources/application-production.yml` — production config
+- [x] `.gitignore` — add `frontend/node_modules/`, `frontend/dist/`, `frontend/release/`
 
 ### Files to delete
 
-- [ ] `electron/.keep` — no longer needed (Electron code lives in `frontend/electron/`)
+- [x] `electron/.keep` — no longer needed (Electron code lives in `frontend/electron/`)
 
 ---
 
