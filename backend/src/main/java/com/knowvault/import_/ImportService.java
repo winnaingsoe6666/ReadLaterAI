@@ -146,8 +146,14 @@ public class ImportService {
         Set<Tag> resolvedTags = resolveTags(tags);
         content.setTags(resolvedTags);
 
-        contentRepository.save(content);
-        return true;
+        try {
+            contentRepository.save(content);
+            return true;
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            // Duplicate URL+source from concurrent/overlapping data
+            log.debug("Duplicate skipped: {}", raw.getTitle());
+            return false;
+        }
     }
 
     private Set<Tag> resolveTags(Set<Tag> tags) {
