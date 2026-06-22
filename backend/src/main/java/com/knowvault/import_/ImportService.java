@@ -34,7 +34,6 @@ public class ImportService {
         this.tagRepository = tagRepository;
     }
 
-    @Transactional
     public ImportResult importFacebookArchive(MultipartFile file) {
         parser.validate(file);
 
@@ -46,29 +45,22 @@ public class ImportService {
             tempDir = parser.extract(file);
 
             List<RawContent> allRaw = new ArrayList<>();
-            allRaw.addAll(parser.parsePosts(tempDir));
-            allRaw.addAll(parser.parseSavedItems(tempDir));
+            try {
+                allRaw.addAll(parser.parsePosts(tempDir));
+            } catch (Exception e) {
+                log.warn("Failed to parse posts: {}", e.getMessage());
+            }
+            try {
+                allRaw.addAll(parser.parseSavedItems(tempDir));
+            } catch (Exception e) {
+                log.warn("Failed to parse saved items: {}", e.getMessage());
+            }
+
+            log.info("Total raw items found: {}", allRaw.size());
 
             for (RawContent raw : allRaw) {
                 try {
-                    // Check for duplicates
-                    if (raw.getUrl() != null && !raw.getUrl().isEmpty()) {
-                        Optional<Content> existing = contentRepository.findByUrlAndSource(raw.getUrl(), "facebook");
-                        if (existing.isPresent()) {
-                            skipped++;
-                            log.debug("Skipping duplicate: {}", raw.getUrl());
-                            continue;
-                        }
-                    }
-
-                    Content content = normalizer.normalize(raw);
-                    Set<Tag> tags = normalizer.extractTags(raw);
-
-                    // Resolve tags - reuse existing ones
-                    Set<Tag> resolvedTags = resolveTags(tags);
-                    content.setTags(resolvedTags);
-
-                    contentRepository.save(content);
+                    importSingleItem(raw);
                     imported++;
                 } catch (Exception e) {
                     log.warn("Failed to import item '{}': {}", raw.getTitle(), e.getMessage());
@@ -84,6 +76,26 @@ public class ImportService {
         } finally {
             parser.cleanup(tempDir);
         }
+    }
+
+    @Transactional
+    public void importSingleItem(RawContent raw) {
+        // Check for duplicates
+        if (raw.getUrl() != null && !raw.getUrl().isEmpty()) {
+            Optional<Content> existing = contentRepository.findByUrlAndSource(raw.getUrl(), "facebook");
+            if (existing.isPresent()) {
+                return;
+            }
+        }
+
+        Content content = normalizer.normalize(raw);
+        Set<Tag> tags = normalizer.extractTags(raw);
+
+        // Resolve tags - reuse existing ones
+        Set<Tag> resolvedTags = resolveTags(tags);
+        content.setTags(resolvedTags);
+
+        contentRepository.save(content);
     }
 
     private Set<Tag> resolveTags(Set<Tag> tags) {

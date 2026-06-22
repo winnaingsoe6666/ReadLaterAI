@@ -1,5 +1,6 @@
 package com.knowvault.tag;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.knowvault.content.Content;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -19,6 +20,7 @@ public class Tag {
     @Column(unique = true, nullable = false)
     private String name;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "tags")
     private Set<Content> contents = new HashSet<>();
 }

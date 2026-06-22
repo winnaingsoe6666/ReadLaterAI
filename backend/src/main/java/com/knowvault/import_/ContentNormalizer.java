@@ -27,13 +27,48 @@ public class ContentNormalizer {
         content.setContentText(raw.getContentText() != null ? raw.getContentText() : "");
         content.setUrl(raw.getUrl() != null ? raw.getUrl() : "");
         content.setSource("facebook");
-        content.setAuthor(raw.getAuthor() != null ? raw.getAuthor() : "");
+
+        // Extract author from title if not provided
+        String author = raw.getAuthor() != null ? raw.getAuthor() : "";
+        if (author.isEmpty() && raw.getTitle() != null) {
+            author = extractAuthorFromTitle(raw.getTitle());
+        }
+        content.setAuthor(author);
+
         content.setCreatedDate(raw.getTimestamp());
         content.setStatus("unread");
         content.setFavorite(false);
         content.setCategory(categorize(raw));
         content.setImportDate(Instant.now().toString());
         return content;
+    }
+
+    private String extractAuthorFromTitle(String title) {
+        // "Win Naing Soe saved Yin Maung's post." -> "Yin Maung"
+        // "Win Naing Soe shared a post." -> ""
+        // "Win Naing Soe saved a link from Duwun's post." -> "Duwun"
+
+        if (title == null) return "";
+
+        // Pattern: "saved X's post"
+        var savedMatcher = java.util.regex.Pattern.compile("saved (.+?)'s post").matcher(title);
+        if (savedMatcher.find()) {
+            return savedMatcher.group(1);
+        }
+
+        // Pattern: "saved a link from X's post"
+        var linkMatcher = java.util.regex.Pattern.compile("saved a link from (.+?)'s post").matcher(title);
+        if (linkMatcher.find()) {
+            return linkMatcher.group(1);
+        }
+
+        // Pattern: "saved a video from X's post"
+        var videoMatcher = java.util.regex.Pattern.compile("saved a video from (.+?)'s post").matcher(title);
+        if (videoMatcher.find()) {
+            return videoMatcher.group(1);
+        }
+
+        return "";
     }
 
     public Set<Tag> extractTags(RawContent raw) {
@@ -56,6 +91,20 @@ public class ContentNormalizer {
         // Add source-type tag
         if (raw.getSourceType() != null) {
             tagNames.add(raw.getSourceType());
+        }
+
+        // Add data quality tags
+        boolean hasUrl = raw.getUrl() != null && !raw.getUrl().isEmpty();
+        boolean hasContent = raw.getContentText() != null && !raw.getContentText().isEmpty();
+
+        if (hasUrl) {
+            tagNames.add("has-link");
+        }
+        if (hasContent) {
+            tagNames.add("has-content");
+        }
+        if (!hasUrl && !hasContent) {
+            tagNames.add("title-only");
         }
 
         return tagNames.stream()

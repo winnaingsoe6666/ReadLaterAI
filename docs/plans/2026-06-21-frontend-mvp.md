@@ -1,6 +1,6 @@
 # KnowVault Frontend MVP Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Build the KnowVault frontend MVP — a complete React UI for all existing backend capabilities including content browsing, search, import, tags, and favorites.
 
@@ -115,20 +115,20 @@ Task 4: UI Components   ──┤── Task 5: Toast   │
 
 **Depends on:** none
 
-- [ ] **Step 1:** Create `frontend/src/types/content.ts` with:
+- [x] **Step 1:** Create `frontend/src/types/content.ts` with:
   - `ContentStatus` union type: `'unread' | 'reading' | 'completed'`
   - `ContentFilter` type: `'all' | ContentStatus`
   - `Content` interface: `{ id: number; title: string; contentText: string; url: string; source: string; category: string; author: string; createdDate: string; importDate: string; status: ContentStatus; favorite: boolean; tags: Tag[] }`
   - Import `Tag` from `./tag` using `import type`
 
-- [ ] **Step 2:** Create `frontend/src/types/tag.ts` with:
+- [x] **Step 2:** Create `frontend/src/types/tag.ts` with:
   - `Tag` interface: `{ id: number; name: string }`
   - `TagWithCount` interface extending Tag: `{ contentCount: number }`
 
-- [ ] **Step 3:** Create `frontend/src/types/import.ts` with:
+- [x] **Step 3:** Create `frontend/src/types/import.ts` with:
   - `ImportResult` interface: `{ imported: number; skipped: number; total: number }`
 
-- [ ] **Step 4:** Create `frontend/src/types/index.ts` barrel export:
+- [x] **Step 4:** Create `frontend/src/types/index.ts` barrel export:
   - `export type { Content, ContentStatus, ContentFilter } from './content'`
   - `export type { Tag, TagWithCount } from './tag'`
   - `export type { ImportResult } from './import'`
@@ -146,26 +146,26 @@ Task 4: UI Components   ──┤── Task 5: Toast   │
 
 **Depends on:** Task 1
 
-- [ ] **Step 1:** Create `frontend/src/services/api.ts`:
+- [x] **Step 1:** Create `frontend/src/services/api.ts`:
   - Create axios instance with `baseURL: '/api'`
   - Response interceptor: extract error message from `error.response.data.message`, log to console, re-throw
   - Network error interceptor: throw "No response received from server"
   - Export as default
 
-- [ ] **Step 2:** Create `frontend/src/services/contentService.ts`:
+- [x] **Step 2:** Create `frontend/src/services/contentService.ts`:
   - `getAll(): Promise<Content[]>` — `GET /content`
   - `getById(id: number): Promise<Content>` — `GET /content/${id}`
   - `search(query: string): Promise<Content[]>` — `GET /content/search` with `params: { q: query }`
   - `updateStatus(id: number, status: ContentStatus): Promise<Content>` — `PATCH /content/${id}/status` with body `{ status }`
   - `toggleFavorite(id: number): Promise<Content>` — `PATCH /content/${id}/favorite`
 
-- [ ] **Step 3:** Create `frontend/src/services/tagService.ts`:
+- [x] **Step 3:** Create `frontend/src/services/tagService.ts`:
   - `getAll(): Promise<Tag[]>` — `GET /tags`
 
-- [ ] **Step 4:** Create `frontend/src/services/importService.ts`:
+- [x] **Step 4:** Create `frontend/src/services/importService.ts`:
   - `uploadFacebookArchive(file: File, deleteAfterImport?: boolean): Promise<ImportResult>` — `POST /import/facebook` with FormData, multipart header
 
-- [ ] **Step 5:** Create `frontend/src/services/index.ts` barrel export
+- [x] **Step 5:** Create `frontend/src/services/index.ts` barrel export
 
 ---
 
@@ -178,16 +178,16 @@ Task 4: UI Components   ──┤── Task 5: Toast   │
 
 **Depends on:** Task 2
 
-- [ ] **Step 1:** Create `frontend/src/hooks/useContent.ts`:
+- [x] **Step 1:** Create `frontend/src/hooks/useContent.ts`:
   - `useContentList()` — fetches all content on mount, returns `{ content, loading, error, refetch }`
   - `useContentDetail(id)` — fetches single item, returns `{ item, loading, error, refetch }`
   - `useContentSearch(query)` — debounced search (300ms), returns `{ results, loading, error }`
   - `useContentActions()` — returns `{ updateStatus, toggleFavorite }` with optimistic updates
 
-- [ ] **Step 2:** Create `frontend/src/hooks/useTags.ts`:
+- [x] **Step 2:** Create `frontend/src/hooks/useTags.ts`:
   - `useTags()` — fetches tags + all content to derive counts, returns `{ tags: TagWithCount[], loading, error, refetch }`
 
-- [ ] **Step 3:** Create `frontend/src/hooks/useImport.ts`:
+- [x] **Step 3:** Create `frontend/src/hooks/useImport.ts`:
   - `useImport()` — state machine (idle/uploading/success/error), returns `{ importFile, status, result, error, reset }`
 
 ---
@@ -206,36 +206,36 @@ Task 4: UI Components   ──┤── Task 5: Toast   │
 
 **Depends on:** none
 
-- [ ] **Step 1:** Create `Button.tsx`:
+- [x] **Step 1:** Create `Button.tsx`:
   - Props: `variant: 'primary' | 'secondary' | 'ghost' | 'destructive'`, `size?: 'sm' | 'md' | 'lg'`, `disabled?`, `onClick?`, `children`, `className?`
   - Variants: primary=`bg-[var(--primary)] text-[var(--primary-foreground)]`, secondary=`bg-[var(--muted)]`, ghost=`bg-transparent hover:bg-[var(--muted)]`, destructive=`bg-[var(--destructive)] text-white`
 
-- [ ] **Step 2:** Create `Card.tsx`:
+- [x] **Step 2:** Create `Card.tsx`:
   - Props: `className?`, `hover?`, `children`
   - Renders: `rounded-xl border border-[var(--border)] bg-[var(--background)] p-4`
   - Optional hover state with primary border
 
-- [ ] **Step 3:** Create `Input.tsx`:
+- [x] **Step 3:** Create `Input.tsx`:
   - Props: `label?`, `error?`, `icon?`, plus standard input HTML attributes
   - Renders label, optional icon, input with border, error text below
 
-- [ ] **Step 4:** Create `Badge.tsx`:
+- [x] **Step 4:** Create `Badge.tsx`:
   - Props: `variant: 'default' | 'success' | 'warning' | 'info' | 'destructive'`, `children`
   - Renders pill with variant-specific colors
 
-- [ ] **Step 5:** Create `Modal.tsx`:
+- [x] **Step 5:** Create `Modal.tsx`:
   - Props: `open`, `onClose`, `title?`, `children`
   - Fixed overlay with backdrop, Escape key listener, close on backdrop click
 
-- [ ] **Step 6:** Create `Spinner.tsx`:
+- [x] **Step 6:** Create `Spinner.tsx`:
   - Props: `size?: 'sm' | 'md' | 'lg'`
   - Animated spinner using lucide-react Loader2 icon
 
-- [ ] **Step 7:** Create `EmptyState.tsx`:
+- [x] **Step 7:** Create `EmptyState.tsx`:
   - Props: `icon`, `title`, `description`, `action?: { label, onClick }`
   - Centered layout with icon, text, optional CTA button
 
-- [ ] **Step 8:** Create `ContentCard.tsx`:
+- [x] **Step 8:** Create `ContentCard.tsx`:
   - Props: `item: Content`, `onFavoriteToggle?`, `compact?`
   - Reusable card for content items with title, category badge, status badge, favorite toggle
   - Compact mode for Dashboard (hides source)
@@ -251,16 +251,16 @@ Task 4: UI Components   ──┤── Task 5: Toast   │
 
 **Depends on:** Task 4
 
-- [ ] **Step 1:** Create `ToastContext.tsx`:
+- [x] **Step 1:** Create `ToastContext.tsx`:
   - Toast type: `{ id: string; message: string; type: 'success' | 'error' | 'info' }`
   - `ToastProvider` manages toast array, auto-dismiss after 3s
   - `useToast()` hook returns `{ addToast, removeToast }`
 
-- [ ] **Step 2:** Create `Toast.tsx`:
+- [x] **Step 2:** Create `Toast.tsx`:
   - Individual toast display with icon per type, close button, auto-dismiss timer
   - Fixed position bottom-right
 
-- [ ] **Step 3:** Modify `main.tsx`:
+- [x] **Step 3:** Modify `main.tsx`:
   - Wrap `<App />` with `<ToastProvider>`
 
 ---
@@ -274,17 +274,17 @@ Task 4: UI Components   ──┤── Task 5: Toast   │
 
 **Depends on:** Task 4
 
-- [ ] **Step 1:** Create `Sidebar.tsx`:
+- [x] **Step 1:** Create `Sidebar.tsx`:
   - Props: `collapsed: boolean`, `onToggle: () => void`
   - Nav links: Dashboard(/), Content(/content), Tags(/tags), Search(/search), Favorites(/favorites), Import(/import)
   - Active state via NavLink, collapse toggle, KnowVault logo
 
-- [ ] **Step 2:** Create `Header.tsx`:
+- [x] **Step 2:** Create `Header.tsx`:
   - Props: `sidebarCollapsed: boolean`
   - Dynamic page title from route, global search input with Cmd+K shortcut
   - App version display (Electron only)
 
-- [ ] **Step 3:** Create `AppLayout.tsx`:
+- [x] **Step 3:** Create `AppLayout.tsx`:
   - Full-height flex: Sidebar + (Header + Outlet)
   - Manages sidebarCollapsed state
 
@@ -297,13 +297,13 @@ Task 4: UI Components   ──┤── Task 5: Toast   │
 
 **Depends on:** Task 3, Task 4, Task 6
 
-- [ ] **Step 1:** Replace static Dashboard. Remove hardcoded content. Import `useContentList`, UI components, and icons (BookOpen, FileText, Heart, Tag, Upload, Search).
+- [x] **Step 1:** Replace static Dashboard. Remove hardcoded content. Import `useContentList`, UI components, and icons (BookOpen, FileText, Heart, Tag, Upload, Search).
 
-- [ ] **Step 2:** Implement stats section:
+- [x] **Step 2:** Implement stats section:
   - Derive from content: total count, unread count, favorites count, category count
   - Render 4 Card components in responsive grid (`grid-cols-2 md:grid-cols-4 gap-4`)
 
-- [ ] **Step 3:** Implement recent content (last 10 by importDate) as ContentCard list with compact mode.
+- [x] **Step 3:** Implement recent content (last 10 by importDate) as ContentCard list with compact mode.
   - Quick actions row: Import, Search, Browse Content buttons
   - Loading: Spinner. Empty: EmptyState with CTA to /import
 
@@ -316,14 +316,14 @@ Task 4: UI Components   ──┤── Task 5: Toast   │
 
 **Depends on:** Task 3, Task 4, Task 6
 
-- [ ] **Step 1:** Create page with `useContentList()`. Set up state: statusFilter, categoryFilter, sortBy.
+- [x] **Step 1:** Create page with `useContentList()`. Set up state: statusFilter, categoryFilter, sortBy.
 
-- [ ] **Step 2:** Implement filter controls:
+- [x] **Step 2:** Implement filter controls:
   - Status tabs: All, Unread, Reading, Completed
   - Category dropdown from unique categories
   - Sort dropdown: Date (newest/oldest), Title (A-Z/Z-A)
 
-- [ ] **Step 3:** Render filtered/sorted ContentCard list. Favorite toggle calls `contentService.toggleFavorite` then refetch. Loading/empty states.
+- [x] **Step 3:** Render filtered/sorted ContentCard list. Favorite toggle calls `contentService.toggleFavorite` then refetch. Loading/empty states.
 
 ---
 
@@ -334,13 +334,13 @@ Task 4: UI Components   ──┤── Task 5: Toast   │
 
 **Depends on:** Task 3, Task 4, Task 6
 
-- [ ] **Step 1:** Read `id` from useParams. Fetch with `useContentDetail(Number(id))`. Back button with ArrowLeft icon.
+- [x] **Step 1:** Read `id` from useParams. Fetch with `useContentDetail(Number(id))`. Back button with ArrowLeft icon.
 
-- [ ] **Step 2:** Two-column layout (lg:grid-cols-3):
+- [x] **Step 2:** Two-column layout (lg:grid-cols-3):
   - Left (col-span-2): rendered contentText via dangerouslySetInnerHTML
   - Right (col-span-1): metadata Card with title, author, source link, date, category Badge, status dropdown, favorite toggle, tag Badges
 
-- [ ] **Step 3:** Loading: Spinner. Error: EmptyState "Content not found" with link to /content.
+- [x] **Step 3:** Loading: Spinner. Error: EmptyState "Content not found" with link to /content.
 
 ---
 
@@ -351,11 +351,11 @@ Task 4: UI Components   ──┤── Task 5: Toast   │
 
 **Depends on:** Task 3, Task 4, Task 6
 
-- [ ] **Step 1:** Create page with `useImport()`. Add drag-and-drop state (isDragging).
+- [x] **Step 1:** Create page with `useImport()`. Add drag-and-drop state (isDragging).
 
-- [ ] **Step 2:** Idle state: dashed border drop zone with Upload icon. File input (accept=.zip). Drag/drop handlers. Client-side validation (.zip only).
+- [x] **Step 2:** Idle state: dashed border drop zone with Upload icon. File input (accept=.zip). Drag/drop handlers. Client-side validation (.zip only).
 
-- [ ] **Step 3:** Success state: summary card with imported/skipped/total counts. "Import Another" and "View Content" buttons. Error state: message + "Try Again" button.
+- [x] **Step 3:** Success state: summary card with imported/skipped/total counts. "Import Another" and "View Content" buttons. Error state: message + "Try Again" button.
 
 ---
 
@@ -366,11 +366,11 @@ Task 4: UI Components   ──┤── Task 5: Toast   │
 
 **Depends on:** Task 3, Task 4, Task 6
 
-- [ ] **Step 1:** Create page with `useTags()`. Read `?filter` from useSearchParams. Add search text state.
+- [x] **Step 1:** Create page with `useTags()`. Read `?filter` from useSearchParams. Add search text state.
 
-- [ ] **Step 2:** Filter tags by search text. Responsive grid (grid-cols-2 sm:3 md:4 lg:6). Each tag Card shows name + count. Click navigates to /content?tag={name}. Highlight tag matching URL filter.
+- [x] **Step 2:** Filter tags by search text. Responsive grid (grid-cols-2 sm:3 md:4 lg:6). Each tag Card shows name + count. Click navigates to /content?tag={name}. Highlight tag matching URL filter.
 
-- [ ] **Step 3:** Loading: Spinner. Empty: EmptyState "No tags yet". Search no match: "No tags matching '{text}'".
+- [x] **Step 3:** Loading: Spinner. Empty: EmptyState "No tags yet". Search no match: "No tags matching '{text}'".
 
 ---
 
@@ -381,11 +381,11 @@ Task 4: UI Components   ──┤── Task 5: Toast   │
 
 **Depends on:** Task 3, Task 4, Task 6
 
-- [ ] **Step 1:** Create page. Read `q` from useSearchParams. State for query, results, loading, error.
+- [x] **Step 1:** Create page. Read `q` from useSearchParams. State for query, results, loading, error.
 
-- [ ] **Step 2:** Debounced search (300ms via useDeferredValue or setTimeout). Call `contentService.search(query)`. Update URL params. Render results as ContentCard list.
+- [x] **Step 2:** Debounced search (300ms via useDeferredValue or setTimeout). Call `contentService.search(query)`. Update URL params. Render results as ContentCard list.
 
-- [ ] **Step 3:** Empty states: no query = search tips; no results = "No results for '{query}'". Loading: Spinner.
+- [x] **Step 3:** Empty states: no query = search tips; no results = "No results for '{query}'". Loading: Spinner.
 
 ---
 
@@ -396,11 +396,11 @@ Task 4: UI Components   ──┤── Task 5: Toast   │
 
 **Depends on:** Task 3, Task 4, Task 6
 
-- [ ] **Step 1:** Create page with `useFavorites()` hook (getAll + filter favorite===true).
+- [x] **Step 1:** Create page with `useFavorites()` hook (getAll + filter favorite===true).
 
-- [ ] **Step 2:** Sort dropdown (Date newest, Title A-Z). Render ContentCard list with onFavoriteToggle callback.
+- [x] **Step 2:** Sort dropdown (Date newest, Title A-Z). Render ContentCard list with onFavoriteToggle callback.
 
-- [ ] **Step 3:** Loading: Spinner. Empty: EmptyState "No favorites yet" with Heart icon.
+- [x] **Step 3:** Loading: Spinner. Empty: EmptyState "No favorites yet" with Heart icon.
 
 ---
 
@@ -411,7 +411,7 @@ Task 4: UI Components   ──┤── Task 5: Toast   │
 
 **Depends on:** Tasks 7-13
 
-- [ ] **Step 1:** Replace router. Remove single Dashboard route. Add AppLayout wrapper with Outlet:
+- [x] **Step 1:** Replace router. Remove single Dashboard route. Add AppLayout wrapper with Outlet:
   - `<Route index element={<Dashboard />} />`
   - `<Route path="content" element={<ContentList />} />`
   - `<Route path="content/:id" element={<ContentDetail />} />`
@@ -420,7 +420,7 @@ Task 4: UI Components   ──┤── Task 5: Toast   │
   - `<Route path="favorites" element={<FavoritesPage />} />`
   - `<Route path="import" element={<ImportPage />} />`
 
-- [ ] **Step 2:** Add catch-all: `<Route path="*" element={<Navigate to="/" replace />} />`
+- [x] **Step 2:** Add catch-all: `<Route path="*" element={<Navigate to="/" replace />} />`
 
 ---
 
@@ -433,11 +433,11 @@ Task 4: UI Components   ──┤── Task 5: Toast   │
 
 **Depends on:** Task 14
 
-- [ ] **Step 1:** Create ErrorBoundary class component. Catches render errors. Shows fallback UI with AlertTriangle icon, "Something went wrong", reload button.
+- [x] **Step 1:** Create ErrorBoundary class component. Catches render errors. Shows fallback UI with AlertTriangle icon, "Something went wrong", reload button.
 
-- [ ] **Step 2:** Wrap `<BrowserRouter>` with `<ErrorBoundary>` in App.tsx.
+- [x] **Step 2:** Wrap `<BrowserRouter>` with `<ErrorBoundary>` in App.tsx.
 
-- [ ] **Step 3:** Add to index.css:
+- [x] **Step 3:** Add to index.css:
   - `--color-surface: var(--background)` alias
   - Custom scrollbar styles
   - Selection highlight with primary color
