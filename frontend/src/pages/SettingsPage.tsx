@@ -215,7 +215,7 @@ export default function SettingsPage() {
               {saving ? <Spinner size="sm" /> : <Save className="w-4 h-4" />}
               Save Settings
             </Button>
-            <Button variant="outline" onClick={loadSettings} className="gap-2">
+            <Button variant="secondary" onClick={loadSettings} className="gap-2">
               <RefreshCw className="w-4 h-4" />
               Reset
             </Button>

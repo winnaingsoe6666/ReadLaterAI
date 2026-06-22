@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
   ExternalLink,
@@ -23,21 +23,13 @@ const STATUS_OPTIONS: { label: string; value: ContentStatus }[] = [
   { label: 'Completed', value: 'completed' },
 ];
 
-const statusVariant: Record<
-  string,
-  'default' | 'success' | 'warning' | 'info' | 'destructive'
-> = {
-  unread: 'info',
-  reading: 'warning',
-  completed: 'success',
-};
 
 export default function ContentDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const numericId = Number(id);
 
-  const { item, loading, error, refetch } = useContentDetail(numericId);
+  const { item, loading, error } = useContentDetail(numericId);
   const { updateStatus, toggleFavorite } = useContentActions();
 
   const [statusValue, setStatusValue] = useState<ContentStatus | null>(null);

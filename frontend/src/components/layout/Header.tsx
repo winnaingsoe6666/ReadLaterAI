@@ -15,7 +15,7 @@ const routeTitles: Record<string, string> = {
   '/import': 'Import',
 };
 
-export default function Header({ sidebarCollapsed }: HeaderProps) {
+export default function Header({ sidebarCollapsed: _sidebarCollapsed }: HeaderProps) {
   const location = useLocation();
   const searchRef = useRef<HTMLInputElement>(null);
   const [searchOpen, setSearchOpen] = useState(false);

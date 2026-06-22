@@ -21,6 +21,12 @@ public class ContentNormalizer {
         "education", List.of("learn", "course", "tutorial", "study", "university", "school", "training", "guide")
     );
 
+    // Metadata source types should not create Content items
+    public boolean isMetadata(String sourceType) {
+        return RawContent.TYPE_LIKED_PAGE.equals(sourceType)
+            || RawContent.TYPE_AD_PREFERENCE.equals(sourceType);
+    }
+
     public Content normalize(RawContent raw) {
         Content content = new Content();
         content.setTitle(raw.getTitle() != null ? raw.getTitle() : "");
@@ -88,9 +94,41 @@ public class ContentNormalizer {
             .limit(5)
             .forEach(e -> tagNames.add(e.getKey()));
 
-        // Add source-type tag
+        // Add source-type specific tags
         if (raw.getSourceType() != null) {
             tagNames.add(raw.getSourceType());
+
+            // Add type-specific tags
+            switch (raw.getSourceType()) {
+                case RawContent.TYPE_MESSENGER_MESSAGE:
+                    tagNames.add("messenger");
+                    tagNames.add("shared-link");
+                    // Extract domain from URL
+                    if (raw.getUrl() != null && !raw.getUrl().isEmpty()) {
+                        try {
+                            String domain = java.net.URI.create(raw.getUrl()).getHost();
+                            if (domain != null && !domain.isEmpty()) {
+                                tagNames.add(domain.replace("www.", ""));
+                            }
+                        } catch (Exception ignored) {}
+                    }
+                    break;
+                case RawContent.TYPE_GROUP_POST:
+                    tagNames.add("group");
+                    // Extract group name from title
+                    if (raw.getTitle() != null && raw.getTitle().contains(" posted in ")) {
+                        String groupName = raw.getTitle().substring(raw.getTitle().indexOf(" posted in ") + 11).trim();
+                        if (!groupName.isEmpty()) tagNames.add(groupName.toLowerCase());
+                    }
+                    break;
+                case RawContent.TYPE_GROUP_COMMENTED_POST:
+                    tagNames.add("group");
+                    tagNames.add("commented");
+                    break;
+                case RawContent.TYPE_COMMENT:
+                    tagNames.add("comment");
+                    break;
+            }
         }
 
         // Add data quality tags
@@ -117,6 +155,24 @@ public class ContentNormalizer {
     }
 
     public String categorize(RawContent raw) {
+        // Source-type based category overrides
+        if (raw.getSourceType() != null) {
+            switch (raw.getSourceType()) {
+                case RawContent.TYPE_MESSENGER_MESSAGE:
+                    return "Messenger";
+                case RawContent.TYPE_GROUP_POST:
+                case RawContent.TYPE_GROUP_COMMENTED_POST:
+                    return "Groups";
+                case RawContent.TYPE_COMMENT:
+                    return "Comments";
+                case RawContent.TYPE_LIKED_PAGE:
+                    return "Likes";
+                case RawContent.TYPE_AD_PREFERENCE:
+                    return "Ads";
+            }
+        }
+
+        // Keyword-based categorization for posts and saved items
         String text = ((raw.getTitle() != null ? raw.getTitle() : "") + " " +
                        (raw.getContentText() != null ? raw.getContentText() : "")).toLowerCase();
 

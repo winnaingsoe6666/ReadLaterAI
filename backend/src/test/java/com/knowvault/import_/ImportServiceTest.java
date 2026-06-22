@@ -72,6 +72,13 @@ class ImportServiceTest {
         when(parser.extract(file)).thenReturn(tempDir);
         when(parser.parsePosts(tempDir)).thenReturn(rawPosts);
         when(parser.parseSavedItems(tempDir)).thenReturn(Collections.emptyList());
+        when(parser.parseMessages(tempDir)).thenReturn(Collections.emptyList());
+        when(parser.parseGroupPosts(tempDir)).thenReturn(Collections.emptyList());
+        when(parser.parseGroupCommentedPosts(tempDir)).thenReturn(Collections.emptyList());
+        when(parser.parseGroupComments(tempDir)).thenReturn(Collections.emptyList());
+        when(parser.parseComments(tempDir)).thenReturn(Collections.emptyList());
+        when(parser.parseLikedPages(tempDir)).thenReturn(Collections.emptyList());
+        when(parser.parseAdPreferences(tempDir)).thenReturn(Collections.emptyList());
         when(contentRepository.findByUrlAndSource("https://fb.com/1", "facebook"))
             .thenReturn(Optional.of(new Content()));
 

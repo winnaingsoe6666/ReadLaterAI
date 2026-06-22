@@ -1,0 +1,33 @@
+{
+  "participants": [{"name": "Test User"}, {"name": "Test Friend"}],
+  "messages": [
+    {
+      "sender_name": "Test Friend",
+      "timestamp_ms": 1700000000000,
+      "content": "Check out this cool article!",
+      "share": {
+        "link": "https://example.com/cool-article"
+      }
+    },
+    {
+      "sender_name": "Test User",
+      "timestamp_ms": 1700000060000,
+      "content": "Thanks for sharing!"
+    },
+    {
+      "sender_name": "Test Friend",
+      "timestamp_ms": 1700000120000,
+      "content": "",
+      "is_unsent": true
+    },
+    {
+      "sender_name": "Test Friend",
+      "timestamp_ms": 1700000180000,
+      "share": {
+        "link": "https://example.com/another-link",
+        "share_text": "This is worth reading"
+      }
+    }
+  ],
+  "title": "Test Friend"
+}

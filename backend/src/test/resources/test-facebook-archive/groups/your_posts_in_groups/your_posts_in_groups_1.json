@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Win Naing Soe posted in Java Developers Group",
+    "timestamp": 1700000000,
+    "data": [
+      {
+        "post": "Just discovered a great Java pattern for handling nulls!"
+      }
+    ],
+    "attachments": [
+      {
+        "data": [
+          {
+            "external_context": {
+              "url": "https://example.com/java-pattern"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

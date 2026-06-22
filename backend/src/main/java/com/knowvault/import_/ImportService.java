@@ -45,23 +45,68 @@ public class ImportService {
             tempDir = parser.extract(file);
 
             List<RawContent> allRaw = new ArrayList<>();
+            int postCount = 0, savedCount = 0, messengerCount = 0, groupCount = 0, commentCount = 0, metadataCount = 0;
+
             try {
-                allRaw.addAll(parser.parsePosts(tempDir));
+                List<RawContent> posts = parser.parsePosts(tempDir);
+                postCount = posts.size();
+                allRaw.addAll(posts);
             } catch (Exception e) {
                 log.warn("Failed to parse posts: {}", e.getMessage());
             }
             try {
-                allRaw.addAll(parser.parseSavedItems(tempDir));
+                List<RawContent> saved = parser.parseSavedItems(tempDir);
+                savedCount = saved.size();
+                allRaw.addAll(saved);
             } catch (Exception e) {
                 log.warn("Failed to parse saved items: {}", e.getMessage());
             }
+            try {
+                List<RawContent> messenger = parser.parseMessages(tempDir);
+                messengerCount = messenger.size();
+                allRaw.addAll(messenger);
+            } catch (Exception e) {
+                log.warn("Failed to parse messenger: {}", e.getMessage());
+            }
+            try {
+                List<RawContent> groupPosts = parser.parseGroupPosts(tempDir);
+                List<RawContent> groupCommented = parser.parseGroupCommentedPosts(tempDir);
+                List<RawContent> groupComments = parser.parseGroupComments(tempDir);
+                groupCount = groupPosts.size() + groupCommented.size() + groupComments.size();
+                allRaw.addAll(groupPosts);
+                allRaw.addAll(groupCommented);
+                allRaw.addAll(groupComments);
+            } catch (Exception e) {
+                log.warn("Failed to parse groups: {}", e.getMessage());
+            }
+            try {
+                List<RawContent> comments = parser.parseComments(tempDir);
+                commentCount = comments.size();
+                allRaw.addAll(comments);
+            } catch (Exception e) {
+                log.warn("Failed to parse comments: {}", e.getMessage());
+            }
+            try {
+                List<RawContent> likedPages = parser.parseLikedPages(tempDir);
+                List<RawContent> adPrefs = parser.parseAdPreferences(tempDir);
+                metadataCount = likedPages.size() + adPrefs.size();
+                allRaw.addAll(likedPages);
+                allRaw.addAll(adPrefs);
+            } catch (Exception e) {
+                log.warn("Failed to parse metadata: {}", e.getMessage());
+            }
 
-            log.info("Total raw items found: {}", allRaw.size());
+            log.info("Parsed: {} posts, {} saved, {} messenger, {} groups, {} comments, {} metadata",
+                    postCount, savedCount, messengerCount, groupCount, commentCount, metadataCount);
 
             for (RawContent raw : allRaw) {
                 try {
-                    importSingleItem(raw);
-                    imported++;
+                    boolean wasImported = importSingleItem(raw);
+                    if (wasImported) {
+                        imported++;
+                    } else {
+                        skipped++;
+                    }
                 } catch (Exception e) {
                     log.warn("Failed to import item '{}': {}", raw.getTitle(), e.getMessage());
                     skipped++;
@@ -79,12 +124,18 @@ public class ImportService {
     }
 
     @Transactional
-    public void importSingleItem(RawContent raw) {
+    public boolean importSingleItem(RawContent raw) {
+        // Skip metadata types (liked pages, ad preferences)
+        if (normalizer.isMetadata(raw.getSourceType())) {
+            log.debug("Skipping metadata item: {}", raw.getTitle());
+            return false;
+        }
+
         // Check for duplicates
         if (raw.getUrl() != null && !raw.getUrl().isEmpty()) {
             Optional<Content> existing = contentRepository.findByUrlAndSource(raw.getUrl(), "facebook");
             if (existing.isPresent()) {
-                return;
+                return false;
             }
         }
 
@@ -96,6 +147,7 @@ public class ImportService {
         content.setTags(resolvedTags);
 
         contentRepository.save(content);
+        return true;
     }
 
     private Set<Tag> resolveTags(Set<Tag> tags) {

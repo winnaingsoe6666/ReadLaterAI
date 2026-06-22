@@ -3,11 +3,8 @@ import { Sparkles } from 'lucide-react';
 import type { SummaryType } from '@/types';
 import { useSummary } from '@/hooks';
 import { useToast } from '@/context/ToastContext';
-import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import Badge from '@/components/ui/Badge';
 import Spinner from '@/components/ui/Spinner';
-import EmptyState from '@/components/ui/EmptyState';
 import SummaryCard from '@/components/ui/SummaryCard';
 
 const SUMMARY_TYPES: { label: string; value: SummaryType }[] = [
@@ -54,7 +51,7 @@ export default function SummarySection({ contentId }: SummarySectionProps) {
           AI Summary
         </h2>
         <Button
-          variant="default"
+          variant="primary"
           size="sm"
           onClick={handleGenerate}
           disabled={generating}
@@ -73,7 +70,7 @@ export default function SummarySection({ contentId }: SummarySectionProps) {
         {SUMMARY_TYPES.map((t) => (
           <Button
             key={t.value}
-            variant={selectedType === t.value ? 'default' : 'outline'}
+            variant={selectedType === t.value ? 'primary' : 'secondary'}
             size="sm"
             onClick={() => setSelectedType(t.value)}
           >
